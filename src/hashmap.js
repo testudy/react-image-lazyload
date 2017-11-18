@@ -50,7 +50,7 @@ class HashMap {
     },
 
     remove (key) {
-        this.map.delete(hashKey);
+        this.map.delete(this.hashKey(key));
     }
 }
 
