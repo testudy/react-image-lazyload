@@ -1,65 +1,58 @@
-define(function (require, exports, module) {
-    'use strict';
-
-    var global = window,
-        $ = require('jquery');
-
-    function detect(prefix) {
-        if (!prefix) {
-            return global.requestAnimationFrame &&
-                (global.cancelAnimationFrame || global.cancelRequestAnimationFrame);
-        }
-
-        return global[prefix + 'RequestAnimationFrame'] &&
-            (global[prefix + 'CancelAnimationFrame'] || global[prefix + 'CancelRequestAnimationFrame']);
+function detect(prefix) {
+    if (!prefix) {
+        return window.requestAnimationFrame &&
+            (window.cancelAnimationFrame || window.cancelRequestAnimationFrame);
     }
 
-    function requestAnimationFrame() {
-        if (detect()) {
-            return global.requestAnimationFrame;
-        }
+    return window[prefix + 'RequestAnimationFrame'] &&
+        (window[prefix + 'CancelAnimationFrame'] || window[prefix + 'CancelRequestAnimationFrame']);
+}
 
-        if (detect('webkit')) {
-            return global.webkitRequestAnimationFrame;
-        }
-
-        if (detect('moz')) {
-            return global.mozRequestAnimationFrame;
-        }
-
-        if (detect('ms')) {
-            return global.msRequestAnimationFrame;
-        }
-
-        return function (callback) {
-            return setTimeout(callback, 25);
-        };
+function requestAnimationFrame() {
+    if (detect()) {
+        return window.requestAnimationFrame;
     }
 
-    function cancelAnimationFrame() {
-        if (detect()) {
-            return global.cancelAnimationFrame || global.cancelRequestAnimationFrame;
-        }
-
-        if (detect('webkit')) {
-            return global.webkitCancelAnimationFrame || global.webkitCancelRequestAnimationFrame;
-        }
-
-        if (detect('moz')) {
-            return global.mozCancelAnimationFrame || global.mozCancelRequestAnimationFrame;
-        }
-
-        if (detect('ms')) {
-            return global.msCancelAnimationFrame || global.msCancelRequestAnimationFrame;
-        }
-
-        return function (id) {
-            return clearTimeout(id);
-        };
+    if (detect('webkit')) {
+        return window.webkitRequestAnimationFrame;
     }
 
-    module.exports = {
-        request: $.proxy(requestAnimationFrame(), global),
-        cancel: $.proxy(cancelAnimationFrame(), global)
+    if (detect('moz')) {
+        return window.mozRequestAnimationFrame;
+    }
+
+    if (detect('ms')) {
+        return window.msRequestAnimationFrame;
+    }
+
+    return function (callback) {
+        return window.setTimeout(callback, 25);
     };
-});
+}
+
+function cancelAnimationFrame() {
+    if (detect()) {
+        return window.cancelAnimationFrame || window.cancelRequestAnimationFrame;
+    }
+
+    if (detect('webkit')) {
+        return window.webkitCancelAnimationFrame || window.webkitCancelRequestAnimationFrame;
+    }
+
+    if (detect('moz')) {
+        return window.mozCancelAnimationFrame || window.mozCancelRequestAnimationFrame;
+    }
+
+    if (detect('ms')) {
+        return window.msCancelAnimationFrame || window.msCancelRequestAnimationFrame;
+    }
+
+    return function (id) {
+        return window.clearTimeout(id);
+    };
+}
+
+export default {
+    request: requestAnimationFrame().bind(window),
+    cancel: cancelAnimationFrame().bind(window),
+};

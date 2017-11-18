@@ -1,93 +1,57 @@
-define(function (require, exports, module) {
-    'use strict';
-
-    function HashMap() {
+class HashMap {
+    constructor () {
         this.index = 0;
-        this.container = [];
-        this.map = {};
+        this.map = new Map();
     }
 
-    HashMap.prototype = {
-        constructor: HashMap,
+    hashKey (key) {
+        var type = typeof key;
 
-        hashCode: function (key) {
-            var type = typeof key;
-
-            if (type === 'object') {
-                if (key.getAttribute) {
-                    if (key.getAttribute('data-lazyload-hashcode')) {
-                        return key.getAttribute('data-lazyload-hashcode');
-                    }
-             
-                    this.index += 1;
-                    key.setAttribute('data-lazyload-hashcode', type + this.index);
-                    return type + this.index;
+        if (type === 'object') {
+            if (key.getAttribute) {
+                if (key.getAttribute('data-lazyload-hashcode')) {
+                    return key.getAttribute('data-lazyload-hashcode');
                 }
-
-
-                if (!key.__hashcode__) {
-                    this.index += 1;
-                    key.__hashcode__ = type + this.index;
-                }
-                return key.__hashcode__;
+         
+                this.index += 1;
+                key.setAttribute('data-lazyload-hashcode', type + this.index);
+                return type + this.index;
             }
 
-            return type + key;
-        },
 
-        size: function () {
-            return this.container.length;
-        },
-
-        values: function () {
-            var values = [],
-                i;
-
-            for (i = this.container.length - 1; i >= 0; i -= 1) {
-                values[i] = this.container[i];
+            if (!key.__hashcode__) {
+                this.index += 1;
+                key.__hashcode__ = type + this.index;
             }
-
-            return values;
-        },
-
-        containsKey: function (key) {
-            var hashCode = this.hashCode(key);
-            return this.map.hasOwnProperty(hashCode);
-        },
-
-        get: function (key) {
-            var hashCode = this.hashCode(key);
-            return this.map[hashCode];
-        },
-
-        put: function (key, value) {
-            var hashCode = this.hashCode(key);
-
-            if (this.containsKey(key)) {
-                this.remove(key);
-            }
-
-            this.map[hashCode] = value;
-            this.container.push(value);
-        },
-
-        remove: function (key) {
-            var hashCode = this.hashCode(key),
-                index,
-                len;
-
-            // index = this.container.indexOf(this.map[hashCode]);
-            for (index = 0, len = this.container.length; index < len; index += 1) {
-                if (this.map[hashCode] === this.container[index]) {
-                    break;
-                }
-            }
-
-            this.container.splice(index, 1);
-
-            delete this.map[hashCode];
+            return key.__hashcode__;
         }
-    };
 
-    module.exports = HashMap;
-});
+        return type + key;
+    },
+
+    size () {
+        return this.map.size;
+    },
+
+    values () {
+        return this.map.values();
+    },
+
+    containsKey (key) {
+        return this.map.has(this.hashKey(key));
+    },
+
+    get (key) {
+        return this.map.get(this.hashKey(key));
+    },
+
+    put (key, value) {
+        this.set(this.hashKey(key), value);
+    },
+
+    remove (key) {
+        this.map.delete(hashKey);
+    }
+}
+
+export default HashMap;
