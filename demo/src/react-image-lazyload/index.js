@@ -2,7 +2,7 @@ import React from 'react';
 
 import './index.css';
 
-function Image(props) {
+export function Image(props) {
     return (
         <div
             role="img"
@@ -17,9 +17,5 @@ function Image(props) {
     );
 }
 
-function lazy(component) {
+export function lazy(component) {
 }
-
-export lazy;
-
-export Image;
