@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-import { Image } from './react-image-lazyload';
+import { Image } from './../../src/';
 
 console.log('image', Image);
 
