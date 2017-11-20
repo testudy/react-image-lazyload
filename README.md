@@ -2,6 +2,9 @@
 
 基于[seajs版本](https://github.com/bystep15/trickle/tree/master/src/project/lazyload)重新实现。
 
+> ### 注意
+> 目前只实现了window scroll
+
 ## 基本原理和注意事项
 1. 速度是相对的，取决于用户的感受，显得很快比真的很快更快；
 2. 占位图片和最终实际图片大小完全一致；
