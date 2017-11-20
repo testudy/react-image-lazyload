@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import Stack from './stack';
 import HashMap from './hashmap';
 import Loader from './loader';
@@ -7,8 +6,6 @@ import animationFrame from './animation-frame';
 
 class Lazyload {
     constructor () {
-        this.$window = $(window);
- 
         this.hashmap = new HashMap();
         this.stack = new Stack();
         this.loader = new Loader({
@@ -20,45 +17,43 @@ class Lazyload {
     }
 
     listen () {
-        this.$window.on('resize', this.request);
-        this.$window.on('scroll', this.request);
+        window.addEventListener('resize', this.request, false);
+        window.addEventListener('scroll', this.request, false);
     }
 
     load = () => {
         if (this.loader.isLoading || this.stack.isEmpty()) {
             return;
         }
-        this.loader.load(this.stack.pop());
+        const item = this.stack.pop();
+        console.log(item);
+        this.loader.load(item.wrap, item.image);
     };
 
-    init (element) {
-        var that = this,
-            $images = $(element).find('img[data-lazyload-original]');
+    init (wrap, image) {
+        if (this.hashmap.containsKey(wrap)) {
+            return;
+        }
+        if (wrap.getAttribute('data-lazyload-state')) {
+            return;
+        }
 
-        $images.each(function () {
-            if (that.hashmap.containsKey(this)) {
-                return;
-            }
-            if (this.getAttribute('data-lazyload-state')) {
-                return;
-            }
-
-            var $this = $(this);
-            if (that.isVisible($this)) {
-                that.interact(this);
-                that.hashmap.put(this, {
-                    element: this,
-                    top: $this.offset().top,
-                    height: $this.innerHeight()
-                });
-            }
-        });
+        const rect = wrap.getBoundingClientRect();
+        if (rect.height) {
+            this.interact(wrap);
+            this.hashmap.put(wrap, {
+                wrap,
+                image,
+                top: rect.y,
+                height: rect.height,
+            });
+        }
 
         this.update();
     }
 
-    interact (element) {
-        element.setAttribute('data-lazyload-state', 'interactive');
+    interact (wrap) {
+        wrap.setAttribute('data-lazyload-state', 'interactive');
     }
 
     request = () => {
@@ -79,13 +74,13 @@ class Lazyload {
             return;
         }
 
-        $.each(images, function () {
-            if (that.inViewport(this.top, this.height)) {
-                that.hashmap.remove(this.element);
-                that.stack.push(this.element);
+        for (const item of images) {
+            if (that.inViewport(item.top, item.height)) {
+                that.hashmap.remove(item.wrap);
+                that.stack.push(item);
                 that.load();
             }
-        });
+        }
     };
 
     isVisible ($elem) {
@@ -108,7 +103,7 @@ class Lazyload {
             scrollY = window.scrollY || window.pageYOffset || window.document.documentElement.scrollTop;
 
         top -= 200;
-        fold = this.$window.height() + scrollY;
+        fold = window.innerHeight + scrollY;
 
         return fold >= top;
     }
@@ -119,15 +114,14 @@ class Lazyload {
     }
 }
 
-const instance;
-exports default function (element) {
-    element = element || window;
+let instance = null;
 
+export default function (wrap, image) {
     if (!instance) {
         instance = new Lazyload();
     }
 
-    instance.init(element);
+    instance.init(wrap, image);
 
     return instance;
 };

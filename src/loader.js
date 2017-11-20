@@ -4,25 +4,25 @@ class Loader {
         this.isLoading = false;
     }
 
-    success (element) {
+    success (wrap) {
         var that = this;
-        element.setAttribute('data-lazyload-state', 'complete');
+        wrap.setAttribute('data-lazyload-state', 'complete');
         that.isLoading = false;
-        that.options.success && that.options.success(element);
+        that.options.success && that.options.success(wrap);
     }
 
-    fail (element) {
+    fail (wrap) {
         var that = this;
         // pop图片，不再加载
         that.isLoading = false;
-        element.setAttribute('data-lazyload-state', 'error');
-        that.options.fail && that.options.fail(element);
+        wrap.setAttribute('data-lazyload-state', 'error');
+        that.options.fail && that.options.fail(wrap);
     }
 
-    load (element) {
+    load (wrap, image) {
         var that = this,
-            state = element.getAttribute('data-lazyload-state'),
-            src = element.getAttribute('data-lazyload-original');
+            state = wrap.getAttribute('data-lazyload-state'),
+            src = wrap.getAttribute('src');
 
         if (state !== 'interactive') {
             return;
@@ -30,24 +30,24 @@ class Loader {
 
         this.isLoading = true;
 
-        element.setAttribute('data-lazyload-state', 'loading');
+        wrap.setAttribute('data-lazyload-state', 'loading');
 
         const success = () => {
-            this.success(element);
-            element.removeEventListener('load', success);
+            this.success(wrap);
+            image.removeEventListener('load', success);
         };
 
         const fail = () => {
-            this.fail(element);
-            element.removeEventListener('error', fail);
-            element.removeEventListener('abort', fail);
+            this.fail(wrap);
+            image.removeEventListener('error', fail);
+            image.removeEventListener('abort', fail);
         };
 
-        element.addEventListener('load', success);
-        element.addEventListener('error', fail);
-        element.addEventListener('abort', fail);
+        image.addEventListener('load', success);
+        image.addEventListener('error', fail);
+        image.addEventListener('abort', fail);
 
-        element.src = src;
+        image.src = src;
     }
 }
 

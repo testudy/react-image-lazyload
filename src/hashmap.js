@@ -27,27 +27,27 @@ class HashMap {
         }
 
         return type + key;
-    },
+    }
 
     size () {
         return this.map.size;
-    },
+    }
 
     values () {
         return this.map.values();
-    },
+    }
 
     containsKey (key) {
         return this.map.has(this.hashKey(key));
-    },
+    }
 
     get (key) {
         return this.map.get(this.hashKey(key));
-    },
+    }
 
     put (key, value) {
-        this.set(this.hashKey(key), value);
-    },
+        this.map.set(this.hashKey(key), value);
+    }
 
     remove (key) {
         this.map.delete(this.hashKey(key));
