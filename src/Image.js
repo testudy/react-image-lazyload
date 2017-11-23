@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
-import lazyload from './lazyload';
+import Lazyload from './Lazyload';
 
 import './Image.css';
 
@@ -23,7 +23,8 @@ class Image extends PureComponent {
     };
 
     componentDidMount() {
-        lazyload(this.wrap, this.image);
+    debugger;
+        Lazyload.getInstance().lazy(this.wrap, this.image);
     }
 
     componentWillUnMount() {

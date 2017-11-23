@@ -5,6 +5,17 @@ import animationFrame from './animation-frame';
 
 
 class Lazyload {
+    static instance = null;
+
+    static getInstance () {
+        console.log(Lazyload.instance);
+        if (!Lazyload.instance) {
+            Lazyload.instance = new Lazyload();
+        }
+ 
+        return Lazyload.instance;
+    }
+
     constructor () {
         this.hashmap = new HashMap();
         this.stack = new Stack();
@@ -30,7 +41,7 @@ class Lazyload {
         this.loader.load(item.wrap, item.image);
     };
 
-    init (wrap, image) {
+    lazy (wrap, image) {
         if (this.hashmap.containsKey(wrap)) {
             return;
         }
@@ -114,14 +125,4 @@ class Lazyload {
     }
 }
 
-let instance = null;
-
-export default function (wrap, image) {
-    if (!instance) {
-        instance = new Lazyload();
-    }
-
-    instance.init(wrap, image);
-
-    return instance;
-};
+export default Lazyload;
