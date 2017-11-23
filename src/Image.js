@@ -23,7 +23,6 @@ class Image extends PureComponent {
     };
 
     componentDidMount() {
-    debugger;
         Lazyload.getInstance().lazy(this.wrap, this.image);
     }
 

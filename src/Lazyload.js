@@ -1,6 +1,6 @@
-import Stack from './stack';
-import HashMap from './hashmap';
-import Loader from './loader';
+import Stack from './Stack';
+import HashMap from './Hashmap';
+import Loader from './Loader';
 import animationFrame from './animation-frame';
 
 
