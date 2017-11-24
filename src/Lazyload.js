@@ -80,7 +80,7 @@ class Lazyload {
 
         for (const [key, entity] of this.map) {
             if (this.inViewport(entity.top, entity.height)) {
-                this.map.delete(entity.image);
+                this.map.delete(entity.hashcode);
                 this.stack.push(entity);
                 this.load();
             }

@@ -4,20 +4,18 @@ class Loader {
         this.isLoading = false;
     }
 
-    success (image) {
-        var that = this;
-        image.setAttribute('data-lazyload-state', 'complete');
-        that.isLoading = false;
-        that.options.success && that.options.success(image);
-    }
+    success = (entity) => {
+        entity.state = 'complete';
+        this.isLoading = false;
+        this.options.success && this.options.success(entity);
+    };
 
-    fail (image) {
-        var that = this;
+    fail = (entity) => {
         // pop图片，不再加载
-        that.isLoading = false;
-        image.setAttribute('data-lazyload-state', 'error');
-        that.options.fail && that.options.fail(image);
-    }
+        this.isLoading = false;
+        entity.state = 'error';
+        this.options.fail && this.options.fail(entity);
+    };
 
     load (entity) {
         const that = this;
@@ -31,12 +29,12 @@ class Loader {
         entity.state = 'loading';
 
         const success = () => {
-            this.success(image);
+            this.success(entity);
             image.removeEventListener('load', success);
         };
 
         const fail = () => {
-            this.fail(image);
+            this.fail(entity);
             image.removeEventListener('error', fail);
             image.removeEventListener('abort', fail);
         };
