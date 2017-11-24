@@ -37,22 +37,22 @@ class Lazyload {
         }
         const item = this.stack.pop();
         console.log(item);
-        this.loader.load(item.wrap, item.image);
+        this.loader.load(item.uri, item.image);
     };
 
-    add (wrap, image) {
-        if (this.map.has(wrap)) {
+    add (uri, image) {
+        if (this.map.has(image)) {
             return;
         }
-        if (wrap.getAttribute('data-lazyload-state')) {
+        if (image.getAttribute('data-lazyload-state')) {
             return;
         }
 
-        const rect = wrap.getBoundingClientRect();
+        const rect = image.getBoundingClientRect();
         if (rect.height) {
-            this.interact(wrap);
-            this.map.set(wrap, {
-                wrap,
+            this.interact(image);
+            this.map.set(image, {
+                uri,
                 image,
                 top: rect.y,
                 height: rect.height,
@@ -65,8 +65,8 @@ class Lazyload {
     remove () {
     }
 
-    interact (wrap) {
-        wrap.setAttribute('data-lazyload-state', 'interactive');
+    interact (image) {
+        image.setAttribute('data-lazyload-state', 'interactive');
     }
 
     request = () => {
@@ -89,7 +89,7 @@ class Lazyload {
 
         for (const item of images) {
             if (that.inViewport(item.top, item.height)) {
-                that.map.delete(item.wrap);
+                that.map.delete(item.image);
                 that.stack.push(item);
                 that.load();
             }

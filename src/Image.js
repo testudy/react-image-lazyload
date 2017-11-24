@@ -23,13 +23,11 @@ class Image extends PureComponent {
     };
 
     componentDidMount() {
-        Lazyload.getInstance().add(this.wrap, this.image);
+        Lazyload.getInstance().add(this.props.source.uri, this.image);
     }
 
     componentWillUnMount() {
-        // 队列删除
-        // unlazyload(this.wrap, this.image);
-        Lazyload.getInstance().remove(this.wrap, this.image);
+        Lazyload.getInstance().remove(this.props.source.uri, this.image);
     }
 
     render() {
@@ -38,7 +36,6 @@ class Image extends PureComponent {
         // data-lazyload-state="interactive|loading|complete|error"
         return (
             <div
-                ref={(element)=>{this.wrap = element;}}
                 role="img"
                 className="lazyload-img"
                 style={{width: `${source.width}px`}}

@@ -4,25 +4,25 @@ class Loader {
         this.isLoading = false;
     }
 
-    success (wrap) {
+    success (image) {
         var that = this;
-        wrap.setAttribute('data-lazyload-state', 'complete');
+        image.setAttribute('data-lazyload-state', 'complete');
         that.isLoading = false;
-        that.options.success && that.options.success(wrap);
+        that.options.success && that.options.success(image);
     }
 
-    fail (wrap) {
+    fail (image) {
         var that = this;
         // pop图片，不再加载
         that.isLoading = false;
-        wrap.setAttribute('data-lazyload-state', 'error');
-        that.options.fail && that.options.fail(wrap);
+        image.setAttribute('data-lazyload-state', 'error');
+        that.options.fail && that.options.fail(image);
     }
 
-    load (wrap, image) {
+    load (uri, image) {
         var that = this,
-            state = wrap.getAttribute('data-lazyload-state'),
-            src = wrap.getAttribute('src');
+            state = image.getAttribute('data-lazyload-state'),
+            src = uri;
 
         if (state !== 'interactive') {
             return;
@@ -30,15 +30,15 @@ class Loader {
 
         this.isLoading = true;
 
-        wrap.setAttribute('data-lazyload-state', 'loading');
+        image.setAttribute('data-lazyload-state', 'loading');
 
         const success = () => {
-            this.success(wrap);
+            this.success(image);
             image.removeEventListener('load', success);
         };
 
         const fail = () => {
-            this.fail(wrap);
+            this.fail(image);
             image.removeEventListener('error', fail);
             image.removeEventListener('abort', fail);
         };
