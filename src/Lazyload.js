@@ -1,5 +1,4 @@
 import Stack from './Stack';
-import HashMap from './Hashmap';
 import Loader from './Loader';
 import animationFrame from './animation-frame';
 
@@ -17,7 +16,7 @@ class Lazyload {
     }
 
     constructor () {
-        this.hashmap = new HashMap();
+        this.map = new Map();
         this.stack = new Stack();
         this.loader = new Loader({
             success: this.load,
@@ -42,7 +41,7 @@ class Lazyload {
     };
 
     add (wrap, image) {
-        if (this.hashmap.containsKey(wrap)) {
+        if (this.map.has(wrap)) {
             return;
         }
         if (wrap.getAttribute('data-lazyload-state')) {
@@ -52,7 +51,7 @@ class Lazyload {
         const rect = wrap.getBoundingClientRect();
         if (rect.height) {
             this.interact(wrap);
-            this.hashmap.put(wrap, {
+            this.map.set(wrap, {
                 wrap,
                 image,
                 top: rect.y,
@@ -79,18 +78,18 @@ class Lazyload {
     };
 
     update = () => {
-        var that = this,
-            images = this.hashmap.values();
-
-        this.requesting = false;
-
-        if (images.length === 0) {
+        if (this.map.size === 0) {
             return;
         }
 
+        var that = this,
+            images = this.map.values();
+
+        this.requesting = false;
+
         for (const item of images) {
             if (that.inViewport(item.top, item.height)) {
-                that.hashmap.remove(item.wrap);
+                that.map.delete(item.wrap);
                 that.stack.push(item);
                 that.load();
             }
