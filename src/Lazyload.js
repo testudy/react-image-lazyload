@@ -7,7 +7,6 @@ class Lazyload {
     static instance = null;
 
     static getInstance () {
-        console.log(Lazyload.instance);
         if (!Lazyload.instance) {
             Lazyload.instance = new Lazyload();
         }
@@ -40,6 +39,10 @@ class Lazyload {
         this.loader.load(entity);
     };
 
+    getScrollY () {
+        return window.scrollY || window.pageYOffset || window.document.documentElement.scrollTop;
+    }
+
     add (entity) {
         if (this.map.has(entity.hashcode)) {
             return;
@@ -49,7 +52,7 @@ class Lazyload {
         if (rect.height) {
             this.map.set(entity.hashcode, Object.assign(entity, {
                 state: 'interactive',
-                top: rect.y,
+                top: rect.y + this.getScrollY(),
                 height: rect.height,
             }));
         }
@@ -73,28 +76,20 @@ class Lazyload {
             return;
         }
 
-        var that = this,
-            images = this.map.values();
-
         this.requesting = false;
 
-        for (const item of images) {
-            if (that.inViewport(item.top, item.height)) {
-                that.map.delete(item.image);
-                that.stack.push(item);
-                that.load();
+        for (const [key, entity] of this.map) {
+            if (this.inViewport(entity.top, entity.height)) {
+                this.map.delete(entity.image);
+                this.stack.push(entity);
+                this.load();
             }
         }
     };
 
-    isVisible ($elem) {
-        return !!($elem.width() || $elem.height()) &&
-            $elem.css('display') !== 'none';
-    }
-
     belowTheFold (top, height) {
         var bottom = top + height + 200,
-            scrollY = window.scrollY || window.pageYOffset || window.document.documentElement.scrollTop,
+            scrollY = this.getScrollY(),
             fold;
 
         fold = scrollY;
@@ -104,7 +99,7 @@ class Lazyload {
 
     aboveTheFold (top, height) {
         var fold,
-            scrollY = window.scrollY || window.pageYOffset || window.document.documentElement.scrollTop;
+            scrollY = this.getScrollY();
 
         top -= 200;
         fold = window.innerHeight + scrollY;

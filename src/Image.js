@@ -38,6 +38,7 @@ class Image extends PureComponent {
 
     render() {
         const {source, alt, placeholder} = this.props;
+        console.log(this.entity);
 
         // data-lazyload-state="interactive|loading|complete|error"
         return (
