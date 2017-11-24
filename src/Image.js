@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
 import Lazyload from './Lazyload';
+import hashcode from './hashcode';
 
 import './Image.css';
 
@@ -22,12 +23,17 @@ class Image extends PureComponent {
         placeholder: '',
     };
 
-    componentDidMount() {
-        Lazyload.getInstance().add(this.props.source.uri, this.image);
+    componentDidMount () {
+        this.entity = {
+            hashcode: hashcode(this),
+            image: this.image,
+            uri: this.props.source.uri
+        };
+        Lazyload.getInstance().add(this.entity);
     }
 
-    componentWillUnMount() {
-        Lazyload.getInstance().remove(this.props.source.uri, this.image);
+    componentWillUnMount () {
+        Lazyload.getInstance().remove(this.entity);
     }
 
     render() {

@@ -35,38 +35,29 @@ class Lazyload {
         if (this.loader.isLoading || this.stack.isEmpty()) {
             return;
         }
-        const item = this.stack.pop();
-        console.log(item);
-        this.loader.load(item.uri, item.image);
+        const entity = this.stack.pop();
+        console.log(entity);
+        this.loader.load(entity);
     };
 
-    add (uri, image) {
-        if (this.map.has(image)) {
-            return;
-        }
-        if (image.getAttribute('data-lazyload-state')) {
+    add (entity) {
+        if (this.map.has(entity.hashcode)) {
             return;
         }
 
-        const rect = image.getBoundingClientRect();
+        const rect = entity.image.getBoundingClientRect();
         if (rect.height) {
-            this.interact(image);
-            this.map.set(image, {
-                uri,
-                image,
+            this.map.set(entity.hashcode, Object.assign(entity, {
+                state: 'interactive',
                 top: rect.y,
                 height: rect.height,
-            });
+            }));
         }
 
         this.update();
     }
 
-    remove () {
-    }
-
-    interact (image) {
-        image.setAttribute('data-lazyload-state', 'interactive');
+    remove (entity) {
     }
 
     request = () => {

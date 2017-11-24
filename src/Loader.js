@@ -19,18 +19,16 @@ class Loader {
         that.options.fail && that.options.fail(image);
     }
 
-    load (uri, image) {
-        var that = this,
-            state = image.getAttribute('data-lazyload-state'),
-            src = uri;
+    load (entity) {
+        const that = this;
+        const { state, image, uri } = entity;
 
         if (state !== 'interactive') {
             return;
         }
 
         this.isLoading = true;
-
-        image.setAttribute('data-lazyload-state', 'loading');
+        entity.state = 'loading';
 
         const success = () => {
             this.success(image);
@@ -47,7 +45,7 @@ class Loader {
         image.addEventListener('error', fail);
         image.addEventListener('abort', fail);
 
-        image.src = src;
+        image.src = uri;
     }
 }
 
