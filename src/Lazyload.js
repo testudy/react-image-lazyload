@@ -18,8 +18,8 @@ class Lazyload {
         this.map = new Map();
         this.stack = new Stack();
         this.loader = new Loader({
-            success: this.load,
-            fail: this.load
+            success: this.loadSuccess,
+            fail: this.loadFail,
         });
  
         this.listen();
@@ -37,6 +37,16 @@ class Lazyload {
         const entity = this.stack.pop();
         console.log(entity);
         this.loader.load(entity);
+    };
+
+    loadSuccess = (entity) => {
+        this.map.delete(entity.hashcode);
+        this.load();
+    };
+
+    loadFail = (entity) => {
+        this.map.delete(entity.hashcode);
+        this.load();
     };
 
     getScrollY () {
@@ -61,6 +71,7 @@ class Lazyload {
     }
 
     remove (entity) {
+        this.loader.abort();
         this.map.delete(entity.hashcode);
     }
 
@@ -79,9 +90,10 @@ class Lazyload {
 
         this.requesting = false;
 
-        for (const [key, entity] of this.map) {
-            if (this.inViewport(entity.top, entity.height)) {
-                this.map.delete(entity.hashcode);
+        for (const [, entity] of this.map) {
+            if (entity.state === 'interactive' &&
+                    this.inViewport(entity.top, entity.height)) {
+
                 this.stack.push(entity);
                 this.load();
             }

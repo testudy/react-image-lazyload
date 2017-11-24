@@ -24,11 +24,10 @@ class Image extends PureComponent {
     };
 
     componentDidMount () {
-        this.entity = {
+        this.entity = Object.assign({
             hashcode: hashcode(this),
             image: this.image,
-            uri: this.props.source.uri
-        };
+        }, this.props);
         Lazyload.getInstance().add(this.entity);
     }
 

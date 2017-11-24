@@ -18,8 +18,9 @@ class Loader {
     };
 
     load (entity) {
-        const that = this;
-        const { state, image, uri } = entity;
+        const {state, image, source: {uri}} = entity;
+
+        this.entity = entity;
 
         if (state !== 'interactive') {
             return;
@@ -44,6 +45,16 @@ class Loader {
         image.addEventListener('abort', fail);
 
         image.src = uri;
+    }
+
+    abort () {
+        this.entity = 'interactive';
+        const { image, placeholder } = this.entity;
+        if (placeholder) {
+            image.src = placeholder;
+        } else {
+            image.removeAttribute('src');
+        }
     }
 }
 
