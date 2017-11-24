@@ -61,6 +61,7 @@ class Lazyload {
     }
 
     remove (entity) {
+        this.map.delete(entity.hashcode);
     }
 
     request = () => {
