@@ -41,7 +41,7 @@ class Lazyload {
         this.loader.load(item.wrap, item.image);
     };
 
-    lazy (wrap, image) {
+    add (wrap, image) {
         if (this.hashmap.containsKey(wrap)) {
             return;
         }
@@ -61,6 +61,9 @@ class Lazyload {
         }
 
         this.update();
+    }
+
+    remove () {
     }
 
     interact (wrap) {

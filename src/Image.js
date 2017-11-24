@@ -23,16 +23,18 @@ class Image extends PureComponent {
     };
 
     componentDidMount() {
-        Lazyload.getInstance().lazy(this.wrap, this.image);
+        Lazyload.getInstance().add(this.wrap, this.image);
     }
 
     componentWillUnMount() {
         // 队列删除
         // unlazyload(this.wrap, this.image);
+        Lazyload.getInstance().remove(this.wrap, this.image);
     }
 
     render() {
         const {source, alt, placeholder} = this.props;
+
         // data-lazyload-state="interactive|loading|complete|error"
         return (
             <div
